@@ -10,8 +10,8 @@ class HeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-      height: 120,
+      padding: const EdgeInsets.only(top: 30, bottom: 110, left: 20, right: 20),
+      height: 220,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [Colors.blueAccent, Colors.lightBlueAccent],
@@ -19,8 +19,8 @@ class HeaderWidget extends StatelessWidget {
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.only(
-          bottomLeft: Radius.circular(20),
-          bottomRight: Radius.circular(20),
+          bottomLeft: Radius.circular(0),
+          bottomRight: Radius.circular(0),
         ),
       ),
       child: Row(

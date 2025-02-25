@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'login_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   final String userRole;
 
-  ProfileScreen({required this.userRole});
+  const ProfileScreen({Key? key, required this.userRole}) : super(key: key);
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  double _userRating = 4.0; // Default rating
 
   Future<void> _logout(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -20,23 +28,88 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
+      appBar: AppBar(
+        title: const Text("Profile"),
+        centerTitle: true,
+        backgroundColor: Colors.blueAccent,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit, color: Colors.white),
+            onPressed: () {
+              // Tambahkan logika untuk Edit Profile
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Edit Profile Clicked")),
+              );
+            },
+          )
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'Profile Screen',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            // Avatar Profile
+            Center(
+              child: CircleAvatar(
+                radius: 50,
+                backgroundImage:
+                    NetworkImage("https://i.pravatar.cc/150?img=5"),
+              ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
+
+            // Nama Pengguna
             Text(
-              'Role: $userRole',
-              style: TextStyle(fontSize: 18),
+              "John Doe",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
+            const SizedBox(height: 5),
+
+            // Role Pengguna
+            Text(
+              "Role: ${widget.userRole}",
+              style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+            ),
+            const SizedBox(height: 15),
+
+            // Rating User
+            Text("User Rating",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 5),
+            RatingBar.builder(
+              initialRating: _userRating,
+              minRating: 1,
+              direction: Axis.horizontal,
+              allowHalfRating: true,
+              itemCount: 5,
+              itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+              itemBuilder: (context, _) => const Icon(
+                Icons.star,
+                color: Colors.amber,
+              ),
+              onRatingUpdate: (rating) {
+                setState(() {
+                  _userRating = rating;
+                });
+              },
+            ),
+            const SizedBox(height: 30),
+
+            // Tombol Logout
+            ElevatedButton.icon(
               onPressed: () => _logout(context),
-              child: Text('Logout'),
+              icon: const Icon(Icons.exit_to_app, color: Colors.white),
+              label: const Text("Logout"),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.redAccent,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
+                textStyle: const TextStyle(fontSize: 16),
+              ),
             ),
           ],
         ),

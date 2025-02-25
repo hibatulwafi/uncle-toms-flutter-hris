@@ -14,6 +14,7 @@ import 'profile_screen.dart';
 import 'widgets/dashboard_card.dart';
 import 'widgets/header_widget.dart';
 import 'widgets/nav_bottom_bar.dart';
+import 'widgets/attendance_card.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String userRole;
@@ -129,20 +130,46 @@ class _DashboardScreenState extends State<DashboardScreen> {
       },
     ];
 
-    return Column(
+    return Stack(
       children: [
-        HeaderWidget(name: widget.name, position: widget.position),
-        Expanded(
-          child: ListView(
-            padding: const EdgeInsets.all(16.0),
+        // Header Widget sebagai latar belakang atas
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: HeaderWidget(name: widget.name, position: widget.position),
+        ),
+        // Bagian konten utama
+        Positioned.fill(
+          top: 120, // Menurunkan konten agar overlay ke Header
+          child: Column(
             children: [
-              _buildSectionTitle('Menu Utama'),
-              _buildDashboardGrid(context, dashboardItems),
-              if (widget.userRole == "admin") ...[
-                const SizedBox(height: 20),
-                _buildSectionTitle('Admin Panel'),
-                _buildDashboardGrid(context, adminItems),
-              ],
+              // Attendance Card dengan sedikit overlay ke dalam Header
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: AttendanceCard(
+                  checkInTime: "08:00 AM",
+                  checkOutTime: "17:00 PM",
+                  warningMessage: "Jangan lupa untuk check-out!",
+                  isCheckedOut: false,
+                ),
+              ),
+
+              // Expanded agar ListView tidak error
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.all(16.0),
+                  children: [
+                    _buildSectionTitle('Menu Utama'),
+                    _buildDashboardGrid(context, dashboardItems),
+                    if (widget.userRole == "admin") ...[
+                      const SizedBox(height: 20),
+                      _buildSectionTitle('Admin Panel'),
+                      _buildDashboardGrid(context, adminItems),
+                    ],
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -152,10 +179,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
       child: Text(
         title,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
       ),
     );
   }
